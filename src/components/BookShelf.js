@@ -4,8 +4,15 @@
 
 import React, {Component} from 'react'
 import Book from './Book'
+import PropTypes from 'prop-types'
 
 class BookShelf extends Component {
+    static propTypes = {
+        title: PropTypes.string.isRequired,
+        books: PropTypes.array.isRequired,
+        onBookShelfChange: PropTypes.func.isRequired
+    };
+
     render() {
         const {title, books, onBookShelfChange} = this.props;
         return (

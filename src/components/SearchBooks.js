@@ -6,10 +6,15 @@ import React, {Component} from 'react'
 import {Link} from 'react-router-dom'
 import Book from './Book'
 import * as BooksApi from '../BooksAPI'
+import PropTypes from 'prop-types'
 
 class BookSearch extends Component {
     static MAX_RESULTS = 20;
     static TIMEOUT_LAZY_LOAD = 500;
+    static propTypes = {
+        booksInShelves: PropTypes.object.isRequired,
+        onBookShelfChange: PropTypes.func.isRequired
+    };
     state = {
         searchText: '',
         searchHint: 'To search book use filter.',
