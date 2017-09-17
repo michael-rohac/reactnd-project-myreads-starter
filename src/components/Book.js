@@ -6,18 +6,21 @@ import React, {Component} from 'react'
 
 class Book extends Component {
     render() {
-        const {book} = this.props;
+        const {book, onBookShelfChange} = this.props;
         return (
             <div className="book">
                 <div className="book-top">
                     <div className="book-cover" style={{
                         width: 128,
                         height: 193,
-                        backgroundImage: `url(${book.imageLinks.thumbnail})`
+                        backgroundImage: `url(${book.imageLinks && book.imageLinks.thumbnail ? book.imageLinks.thumbnail : ''})`
                     }} title={book.description}></div>
                     <div className="book-shelf-changer">
-                        <select value={book.shelf} onChange={e => e.preventDefault()}>
-                            <option value="none" disabled>Move to...</option>
+                        <select value={book.shelf} onChange={(e) => {
+                            event.preventDefault();
+                            onBookShelfChange(book, e.target.value)
+                        }}>
+                            <option disabled>Move to...</option>
                             <option value="currentlyReading">Currently Reading</option>
                             <option value="wantToRead">Want to Read</option>
                             <option value="read">Read</option>

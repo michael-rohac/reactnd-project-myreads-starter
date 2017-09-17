@@ -8,14 +8,47 @@ import './App.css'
 
 class BooksApp extends React.Component {
     state = {
+        initialized: false,
         currentlyReading: [],
         wantToRead: [],
         read: []
     };
 
+    onBookShelfChange(book, newShelf) {
+        if (!book || !newShelf || book.shelf === newShelf) return;
+        BooksApi.update(book, newShelf).then(result => {
+            const filter = {
+                currentlyReading: result.currentlyReading || [],
+                wantToRead: result.wantToRead || [],
+                read: result.read || []
+            };
+            this.setState(prevState => {
+                const newState = {};
+                const newBook = {...book, shelf: newShelf};
+                for (const shelf of Object.keys(prevState)) {
+                    if (shelf === book.shelf) {
+                        newState[shelf] = prevState[shelf].filter(oldBook => book.id !== oldBook.id)
+                    } else if (shelf === newShelf) {
+                        newState[shelf] = prevState[shelf].concat([newBook]);
+                    } else {
+                        newState[shelf] = prevState[shelf];
+                    }
+                }
+
+                return {
+                    currentlyReading: newState.currentlyReading.filter(book => filter.currentlyReading.includes(book.id)),
+                    wantToRead: newState.wantToRead.filter(book => filter.wantToRead.includes(book.id)),
+                    read: newState.read.filter(book => filter.read.includes(book.id))
+                }
+            })
+        });
+    };
+
     componentDidMount() {
+        if (this.state.initialized) return;
         BooksApi.getAll().then(result => {
             const books = {
+                initialized: true,
                 currentlyReading: [],
                 wantToRead: [],
                 read: []
@@ -37,9 +70,12 @@ class BooksApp extends React.Component {
                         </div>
                         <div className="list-books-content">
                             <div>
-                                <BookShelf books={this.state.currentlyReading} title="Currently Reading" />
-                                <BookShelf books={this.state.wantToRead} title="Want to Read"/>
-                                <BookShelf books={this.state.read} title="Read"/>
+                                <BookShelf books={this.state.currentlyReading} title="Currently Reading"
+                                           onBookShelfChange={this.onBookShelfChange.bind(this)}/>
+                                <BookShelf books={this.state.wantToRead} title="Want to Read"
+                                           onBookShelfChange={this.onBookShelfChange.bind(this)}/>
+                                <BookShelf books={this.state.read} title="Read"
+                                           onBookShelfChange={this.onBookShelfChange.bind(this)}/>
                             </div>
                         </div>
                         <div className="open-search">
@@ -47,7 +83,14 @@ class BooksApp extends React.Component {
                         </div>
                     </div>
                 )}/>
-                <Route path="/search" component={SearchBooks}/>
+                <Route path="/search" render={({history}) => (
+                    <SearchBooks
+                        booksInShelves={ [].concat(this.state.currentlyReading, this.state.wantToRead, this.state.read).reduce((acc, book) => {acc[book.id] = book; return acc;}, {})}
+                        onBookShelfChange={(book, shelf) => {
+                            this.onBookShelfChange(book, shelf);
+                            history.push("/");
+                        }}/>
+                )}/>
             </div>
         )
     }
