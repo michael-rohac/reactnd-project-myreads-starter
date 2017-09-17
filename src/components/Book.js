@@ -6,6 +6,7 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 
 class Book extends Component {
+    // Definition of required properties and its types.
     static propTypes = {
         book: PropTypes.object.isRequired,
         onBookShelfChange: PropTypes.func.isRequired

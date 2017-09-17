@@ -7,6 +7,7 @@ import Book from './Book'
 import PropTypes from 'prop-types'
 
 class BookShelf extends Component {
+    // Definition of required properties and its types.
     static propTypes = {
         title: PropTypes.string.isRequired,
         books: PropTypes.array.isRequired,
