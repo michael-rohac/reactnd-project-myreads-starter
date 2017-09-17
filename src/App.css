@@ -161,6 +161,10 @@ body, .app {
   cursor: pointer;
 }
 
+.book-shelf-changer option:checked {
+  font-weight: bold;
+}
+
 /* book cover */
 
 .book-cover {
@@ -171,4 +175,10 @@ body, .app {
   padding: 20px 10px 0;
   text-align: center;
   font-size: 0.8em;
+}
+
+.search-hint {
+  height: 20px;
+  text-align: center;
+  margin: 20px 0;
 }

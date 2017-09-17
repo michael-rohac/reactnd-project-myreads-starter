@@ -16,7 +16,7 @@ class Book extends Component {
                         backgroundImage: `url(${book.imageLinks.thumbnail})`
                     }} title={book.description}></div>
                     <div className="book-shelf-changer">
-                        <select>
+                        <select value={book.shelf} onChange={e => e.preventDefault()}>
                             <option value="none" disabled>Move to...</option>
                             <option value="currentlyReading">Currently Reading</option>
                             <option value="wantToRead">Want to Read</option>
@@ -27,7 +27,7 @@ class Book extends Component {
                 </div>
                 <div className="book-title">{book.title}</div>
                 <div className="book-authors">
-                    {book.authors.map((author, idx) => <div key={idx}>{author}</div>)}
+                    {book.authors && book.authors.map((author, idx) => <div key={idx}>{author}</div>)}
                 </div>
             </div>
         )
